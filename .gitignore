@@ -1,0 +1,5 @@
+node_modules/
+.superpowers/
+debug/
+*.log
+/docs/progress.md

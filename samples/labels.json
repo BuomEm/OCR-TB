@@ -1,0 +1,5 @@
+[
+  { "id": "01", "file": "01.jpg", "expected": "3h8a", "sha256": "d9df637bd0ee13f30bece45a8081be9f36a92515d0d491570715c69a96c639a8" },
+  { "id": "02", "file": "02.jpg", "expected": "3akp", "sha256": "3acb85e150878e9bb7a7fcd52c6b039dca48769b33a9ac40dbad0264bcdffbff" },
+  { "id": "03", "file": "03.jpg", "expected": "ehxe", "sha256": "431dd24d9218818178a253f5258eb4e51fda2667833534f877ae8cf7c6ef3535" }
+]
