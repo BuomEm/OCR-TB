@@ -83,12 +83,13 @@ jobs:
           gh release upload "$TAG" dist/*.whl dist/*.tar.gz --clobber || true
 
       - name: Phát hành lên PyPI
-        if: ${{ secrets.PYPI_API_TOKEN != '' }}
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: python -m pip install twine && python -m twine upload dist/*
-
-      - name: Bỏ qua PyPI (chưa cấu hình token)
-        if: ${{ secrets.PYPI_API_TOKEN == '' }}
-        run: echo "Chưa có secret PYPI_API_TOKEN — bỏ qua phát hành PyPI."
+        run: |
+          if [ -z "$TWINE_PASSWORD" ]; then
+            echo "Chưa có secret PYPI_API_TOKEN — bỏ qua phát hành PyPI."
+            exit 0
+          fi
+          python -m pip install twine
+          python -m twine upload dist/*
