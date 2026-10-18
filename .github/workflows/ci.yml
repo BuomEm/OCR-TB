@@ -54,13 +54,13 @@ jobs:
         run: docker build -t ocr-tb:ci .
       - name: Smoke test server
         run: |
-          docker run -d --name ocr -p 8080:8080 ocr-tb:ci
+          docker run -d --name ocr -p 2424:2424 ocr-tb:ci
           for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8080/health > /dev/null; then break; fi
+            if curl -fsS http://127.0.0.1:2424/health > /dev/null; then break; fi
             sleep 2
           done
-          curl -fsS http://127.0.0.1:8080/health
+          curl -fsS http://127.0.0.1:2424/health
           curl -fsS -X POST -F "file=@samples/01.jpg" -F "expect_length=4" \
-            http://127.0.0.1:8080/solve/upload
+            http://127.0.0.1:2424/solve/upload
           docker logs ocr
           docker rm -f ocr

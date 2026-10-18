@@ -59,6 +59,9 @@ $spec = if ($NoServer) { $scriptDir } else { "$scriptDir[server]" }
 $env:OCR_TB_HOME = $InstallDir
 $env:OCR_TB_CACHE = Join-Path $InstallDir "models"
 
+Write-Step "Ghi thông tin cài đặt (để ocr-tb update biết cập nhật thế nào)"
+& $VenvPy -m ocr_tb record-install --method script --repo-dir $scriptDir --prefix $InstallDir | Out-Null
+
 Write-Step "Tải model ONNX vào cache"
 & $VenvPy -m ocr_tb models pull
 

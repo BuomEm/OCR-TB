@@ -5,43 +5,24 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ocr-tb"
 version = "1.0.0"
-description = "OCR-TB: giai captcha OCR (ddddocr / PP-OCR / Tesseract) kèm HTTP server và bộ benchmark"
+description = "OCR-TB: giải captcha OCR (ddddocr / PP-OCR / Tesseract) kèm HTTP server và bộ benchmark"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 license = { text = "MIT" }
-authors = [{ name = "BuomEm", email = "bluevn26275260@gmail.com" }]
-maintainers = [{ name = "BuomEm", email = "bluevn26275260@gmail.com" }]
-keywords = [
-  "ocr",
-  "captcha",
-  "ddddocr",
-  "ppocr",
-  "paddleocr",
-  "tesseract",
-  "benchmark",
-  "fastapi",
-]
+authors = [{ name = "TrackingBot tools" }]
+keywords = ["ocr", "captcha", "ddddocr", "ppocr", "tesseract", "benchmark"]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Environment :: Console",
-  "Environment :: Web Environment",
-  "Framework :: FastAPI",
-  "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
-  "Natural Language :: Vietnamese",
-  "Operating System :: Microsoft :: Windows",
-  "Operating System :: POSIX :: Linux",
-  "Operating System :: MacOS",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
   "Topic :: Scientific/Engineering :: Image Recognition",
-  "Topic :: Software Development :: Testing",
 ]
 
-# opencv-python-headless: không cần libGL trên server/container.
-# rapidocr-onnxruntime khai báo opencv-python; headless cung cấp đúng module `cv2`.
+# opencv-python-headless: không cần libGL, chạy được trên container Alpine/Debian slim.
+# rapidocr-onnxruntime khai báo opencv-python; headless cài kèm cung cấp đúng module `cv2`.
 dependencies = [
   "ddddocr>=1.6,<2",
   "onnxruntime>=1.16",
@@ -57,13 +38,7 @@ dependencies = [
 
 [project.optional-dependencies]
 server = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9"]
-dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.4"]
-
-[project.urls]
-Homepage = "https://github.com/BuomEm/OCR-TB"
-Repository = "https://github.com/BuomEm/OCR-TB"
-Issues = "https://github.com/BuomEm/OCR-TB/issues"
-Changelog = "https://github.com/BuomEm/OCR-TB/blob/main/CHANGELOG.md"
+dev = ["pytest>=8", "ruff>=0.4", "httpx>=0.27"]
 
 [project.scripts]
 ocr-tb = "ocr_tb.cli:main"
@@ -73,10 +48,6 @@ package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-q"
 
 [tool.ruff]
 line-length = 120

@@ -1,7 +1,7 @@
 """CLI của OCR-TB.
 
     ocr-tb solve <file|thư mục> [--model ddddocr] [--config default] [--variant raw]
-    ocr-tb serve [--host 0.0.0.0] [--port 8080]
+    ocr-tb serve [--host 0.0.0.0] [--port 2424]
     ocr-tb models list | pull [model_id...] | path
     ocr-tb bench run  [--models ...] [--variants raw,otsu] [--limit N]
     ocr-tb bench score [--run-id ...]
@@ -42,6 +42,12 @@ def _parse_chain(model: str | None, config: str | None, variant: str | None) -> 
     if not model:
         return None
     return [{"model": model, "config": config or "default", "variant": variant or "raw"}]
+
+
+def _version_string() -> str:
+    from .update import current_version
+
+    return f"{APP_NAME} {current_version()}"
 
 
 def cmd_solve(args: argparse.Namespace) -> int:
@@ -90,6 +96,11 @@ def cmd_solve(args: argparse.Namespace) -> int:
 
 def cmd_serve(args: argparse.Namespace) -> int:  # pragma: no cover
     from .server import run
+    from .update import update_notice
+
+    notice = update_notice()
+    if notice:
+        print(notice)
 
     run(args.host, args.port, args.threads)
     return 0
@@ -218,6 +229,34 @@ def cmd_info(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_update(args: argparse.Namespace) -> int:
+    from .update import apply_update, check_status
+
+    status = check_status()
+    print(f"{APP_NAME} hiện tại : {status['current']}")
+    print(f"Kiểm tra release   : {status['message']}")
+    if status.get("latest"):
+        print(f"Trang release      : {status['latest']['url']}")
+
+    if args.check:
+        return 0
+    if status.get("update_available") is False:
+        print("Không có bản mới, không cần cập nhật.")
+        return 0
+    if not args.yes:
+        answer = input("Cập nhật ngay? [y/N] ").strip().lower()
+        if answer not in {"y", "yes"}:
+            print("Đã huỷ.")
+            return 0
+
+    code = apply_update(assume_yes=True, dry_run=args.dry_run)
+    if code == 0:
+        print("\nCập nhật xong. Kiểm tra bằng: ocr-tb --version")
+    else:
+        print(f"\nCập nhật thất bại (exit {code}). Xem README mục 'Cập nhật'.", file=sys.stderr)
+    return code
+
+
 def cmd_memory(args: argparse.Namespace) -> int:
     from pathlib import Path as _Path
 
@@ -228,9 +267,18 @@ def cmd_memory(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_record_install(args: argparse.Namespace) -> int:
+    """Script cài đặt gọi lệnh này để `ocr-tb update` biết cập nhật theo cách nào."""
+    from .update import record_install
+
+    path = record_install(args.method, repo_dir=args.repo_dir, extra={"prefix": args.prefix})
+    print(f"Đã ghi thông tin cài đặt: {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog=APP_NAME, description="OCR-TB: giải captcha + benchmark OCR")
-    parser.add_argument("--version", action="version", version=f"{APP_NAME} {VERSION}")
+    parser.add_argument("--version", action="version", version=_version_string())
     sub = parser.add_subparsers(dest="command", required=True)
 
     # ------------------------------------------------------------------ solve
@@ -286,6 +334,20 @@ def build_parser() -> argparse.ArgumentParser:
     memory = sub.add_parser("memory", help="đo RAM khi nạp/chạy model + dung lượng đĩa")
     memory.add_argument("--images", default=None, help="thư mục ảnh để đo (mặc định OCR_TB_IMAGES)")
     memory.set_defaults(func=cmd_memory)
+
+    # ------------------------------------------------------------------ update
+    update = sub.add_parser("update", help="kiểm tra và cập nhật OCR-TB từ GitHub Releases")
+    update.add_argument("--check", action="store_true", help="chỉ kiểm tra, không cập nhật")
+    update.add_argument("-y", "--yes", action="store_true", help="không hỏi lại")
+    update.add_argument("--dry-run", action="store_true", help="in lệnh sẽ chạy mà không thực thi")
+    update.set_defaults(func=cmd_update)
+
+    # ------------------------------------------------- record-install (nội bộ)
+    record = sub.add_parser("record-install", help=argparse.SUPPRESS)
+    record.add_argument("--method", choices=["script", "source", "pypi"], required=True)
+    record.add_argument("--repo-dir", default=None)
+    record.add_argument("--prefix", default=None)
+    record.set_defaults(func=cmd_record_install)
 
     return parser
 

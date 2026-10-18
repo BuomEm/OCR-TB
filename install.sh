@@ -70,6 +70,10 @@ fi
 export OCR_TB_HOME="$PREFIX"
 export OCR_TB_CACHE="$PREFIX/models"
 
+echo "==> Ghi thông tin cài đặt (để `ocr-tb update` biết cập nhật thế nào)"
+export OCR_TB_HOME="$PREFIX"
+"$VENV_PY" -m ocr_tb record-install --method script --repo-dir "$SCRIPT_DIR" --prefix "$PREFIX" >/dev/null || true
+
 echo "==> Tải model ONNX vào cache"
 "$VENV_PY" -m ocr_tb models pull
 
@@ -94,7 +98,7 @@ cat <<EOF
 Cài xong. Kiểm tra nhanh:
   ocr-tb info
   ocr-tb solve /duong/dan/anh-captcha.png
-  ocr-tb serve --host 0.0.0.0 --port 8080
+  ocr-tb serve --host 0.0.0.0 --port 2424
 
 Cache model: $OCR_TB_CACHE
 Dữ liệu (benchmark/labels): ${OCR_TB_HOME:-$PREFIX}/data

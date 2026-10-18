@@ -27,6 +27,6 @@ systemctl --no-pager status ocr-tb || true
 cat <<EOF
 
 Đã bật service. Kiểm tra:
-  curl -s http://127.0.0.1:8080/health
+  curl -s http://127.0.0.1:2424/health
   journalctl -u ocr-tb -f
 EOF

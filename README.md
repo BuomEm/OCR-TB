@@ -5,6 +5,7 @@
 **Giải captcha OCR cho Node.js, Python, Linux, Windows, Docker — không cần GPU, không cần API key.**
 
 [![CI](https://github.com/BuomEm/OCR-TB/actions/workflows/ci.yml/badge.svg)](https://github.com/BuomEm/OCR-TB/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/BuomEm/OCR-TB?label=release&color=blue)](https://github.com/BuomEm/OCR-TB/releases)
 [![Python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13-3776ab.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20|%20Linux%20|%20macOS%20|%20Docker-lightgrey.svg)](https://github.com/BuomEm/OCR-TB)
@@ -66,6 +67,7 @@ Bộ **100 ảnh captcha ViettelPost** (200×50, 4 ký tự `a-z0-9`, nhiễu n�
 | 🌐 **HTTP server** | FastAPI: `/solve`, `/solve/upload`, `/solve/batch`, `/health`, `/models` |
 | 💻 **CLI** | `ocr-tb solve <file hoặc thư mục>` — JSON hoặc bảng |
 | 📊 **Bộ benchmark** | chạy 100 ảnh, xuất báo cáo Markdown/CSV/JSON, so sánh từng model |
+| 🔄 **Cập nhật dễ** | `ocr-tb update`, tự nhận biết cách cài, tự báo khi có bản mới |
 | 🧪 **Đo RAM & đĩa** | `ocr-tb memory` — đo thực tế RSS và dung lượng model |
 | 🖼️ **Tiền xử lý ảnh** | `raw`, `gray`, `otsu`, `upscale2x_otsu` |
 | 🐳 **Docker** | image `python:3.12-slim`, chạy bằng user không phải root |
@@ -120,8 +122,8 @@ systemctl status ocr-tb
 git clone https://github.com/BuomEm/OCR-TB.git && cd OCR-TB
 docker build -t ocr-tb:1.0.0 .
 
-docker run --rm -p 8080:8080 ocr-tb:1.0.0                      # HTTP server
-docker run --rm ocr-tb:1.0.0 solve /data/samples                # CLI
+docker run --rm -p 2424:2424 ocr-tb:1.0.0                  # HTTP server
+docker run --rm ocr-tb:1.0.0 solve /data/samples            # CLI
 docker run --rm -v "$PWD/samples:/data" ocr-tb:1.0.0 solve /data --json
 ```
 
@@ -171,23 +173,23 @@ cap.png	3dkb	[ppocr_v6_small/rec_only/otsu]	17 ms
 ### HTTP server
 
 ```bash
-ocr-tb serve --host 0.0.0.0 --port 8080
+ocr-tb serve --host 0.0.0.0 --port 2424      # cổng mặc định: 2424
 ```
 
 ```bash
 # upload 1 ảnh
 curl -X POST -F "file=@cap.png" -F "expect_length=4" \
-  http://127.0.0.1:8080/solve/upload
+  http://127.0.0.1:2424/solve/upload
 
 # base64 + chọn model
 curl -X POST -H 'Content-Type: application/json' \
   -d '{"image_base64":"<base64>","model":"ppocr_v6_small","variant":"otsu"}' \
-  http://127.0.0.1:8080/solve
+  http://127.0.0.1:2424/solve
 
 # nhiều ảnh
 curl -X POST -H 'Content-Type: application/json' \
   -d '{"images_base64":["<base64-1>","<base64-2>"]}' \
-  http://127.0.0.1:8080/solve/batch
+  http://127.0.0.1:2424/solve/batch
 ```
 
 Phản hồi:
@@ -205,7 +207,7 @@ Phản hồi:
 }
 ```
 
-Tài liệu OpenAPI tự sinh tại `http://127.0.0.1:8080/docs`.
+Tài liệu OpenAPI tự sinh tại `http://127.0.0.1:2424/docs`.
 
 ### Gọi từ Node.js
 
@@ -214,7 +216,7 @@ const form = new FormData();
 form.append("file", new Blob([pngBuffer], { type: "image/png" }), "cap.png");
 form.append("expect_length", "4");
 
-const res = await fetch("http://127.0.0.1:8080/solve/upload", { method: "POST", body: form });
+const res = await fetch("http://127.0.0.1:2424/solve/upload", { method: "POST", body: form });
 const { normalized } = await res.json();
 console.log("captcha:", normalized);
 ```
@@ -276,6 +278,70 @@ chuẩn hoá, confidence, thời gian và lỗi.
 
 ---
 
+## 🔄 Cập nhật & phát hành
+
+### Dành cho người dùng
+
+```bash
+ocr-tb update --check      # đã có bản mới chưa (không thay đổi gì)
+ocr-tb update              # cập nhật theo đúng cách bạn đã cài
+ocr-tb update --dry-run    # xem lệnh sẽ chạy mà không thực thi
+ocr-tb --version           # phiên bản đang chạy
+```
+
+`ocr-tb update` tự nhận biết bạn cài bằng cách nào (PyPI / `install.sh` / `install.ps1` /
+clone + `pip install -e`) nhờ file `install-meta.json` ghi lúc cài, rồi đi đúng đường:
+
+| Cách cài | `ocr-tb update` sẽ chạy |
+|---|---|
+| `pip install ocr-tb` | `pip install --upgrade ocr-tb` |
+| `install.sh` / `install.ps1` | `git pull` trong thư mục cài + chạy lại script cài đặt |
+| `pip install -e .` | `git pull --ff-only` + `pip install -e .` |
+
+Khi chạy `ocr-tb serve`, công cụ tự tra release mới nhất (cache 24 giờ, tắt bằng
+`OCR_TB_CHECK_UPDATE=0`, tự tắt trong CI) và chỉ in **một dòng cảnh báo** vào log.
+
+<details>
+<summary>Cập nhật thủ công / ghim phiên bản cụ thể</summary>
+
+```bash
+# từ mã nguồn
+git clone https://github.com/BuomEm/OCR-TB.git && cd OCR-TB && ./install.sh
+
+# từ PyPI (sau khi có bản phát hành)
+pip install --upgrade ocr-tb
+
+# ghim một phiên bản cụ thể từ GitHub
+pip install "ocr-tb @ git+https://github.com/BuomEm/OCR-TB@v1.0.0"
+
+# từ release tarball
+pip install https://github.com/BuomEm/OCR-TB/releases/latest/download/ocr-tb-1.0.0.tar.gz
+```
+</details>
+
+### Dành cho người phát triển
+
+Mỗi lần đẩy tag `vX.Y.Z`, workflow [`release.yml`](.github/workflows/release.yml) tự động:
+
+1. chạy test và **so khớp tag với version trong `pyproject.toml`**;
+2. build `sdist` + `wheel`;
+3. tạo GitHub Release kèm file đính kèm, ghi chú lấy từ [`CHANGELOG.md`](CHANGELOG.md);
+4. đẩy lên PyPI **nếu** đã cấu hình secret `PYPI_API_TOKEN`.
+
+```bash
+# 1. cập nhật version trong pyproject.toml + src/ocr_tb/config.py
+# 2. thêm mục mới trong CHANGELOG.md
+pytest tests -q
+git commit -am "release: v1.1.0" && git push
+
+# 3. đánh dấu phát hành -> workflow tự build và tạo Release
+git tag -a v1.1.0 -m "v1.1.0" && git push origin v1.1.0
+```
+
+Người dùng chạy `ocr-tb update` là lên bản mới.
+
+---
+
 ## ⚙️ Cấu hình
 
 | Biến môi trường | Mặc định | Ý nghĩa |
@@ -286,8 +352,10 @@ chuẩn hoá, confidence, thời gian và lỗi.
 | `OCR_TB_MODEL` | `ddddocr` | model dùng mặc định |
 | `OCR_TB_CONFIG` | rỗng | config dùng mặc định |
 | `OCR_TB_VARIANT` | `raw` | tiền xử lý mặc định |
-| `OCR_TB_HOST` / `OCR_TB_PORT` | `0.0.0.0` / `8080` | HTTP server |
+| `OCR_TB_HOST` / `OCR_TB_PORT` | `0.0.0.0` / `2424` | HTTP server |
 | `OCR_TB_TIMEOUT` | `15` | timeout mỗi lượt giải (giây) |
+| `OCR_TB_CHECK_UPDATE` | bật | tự kiểm tra bản mới khi chạy `serve` |
+| `OCR_TB_REPO` | `BuomEm/OCR-TB` | repo nguồn dùng để kiểm tra release |
 | `HF_ENDPOINT` | `https://huggingface.co` | mirror tải model |
 
 ```bash
@@ -310,13 +378,15 @@ OCR-TB/
 │   ├── server.py       FastAPI
 │   ├── bench.py        benchmark + báo cáo + labeling
 │   ├── download.py     tải model về cache
+│   ├── update.py       kiểm tra/cập nhật từ GitHub Releases
 │   ├── memory.py       đo RAM/dung lượng
 │   ├── config.py       đường dẫn + biến môi trường
 │   └── util.py         thống kê, levenshtein, io
-├── tests/              29 test (offline)
+├── tests/              39 test (offline)
 ├── samples/            3 ảnh captcha mẫu + nhãn
 ├── examples/           script Node lấy ảnh captcha từ API
 ├── docs/benchmark/     báo cáo benchmark 100 ảnh
+├── .github/workflows/  CI + release tự động
 ├── install.sh          cài Linux/macOS
 ├── install.ps1         cài Windows
 ├── install-service.sh  systemd service
@@ -352,10 +422,14 @@ Không. Toàn bộ chạy CPU qua ONNX Runtime, đo trên CPU thường đã đ�
 
 **Cần mạng khi chạy không?**
 Không, sau khi `ocr-tb models pull` xong. ddddocr có sẵn trong package pip.
+(Kiểm tra bản mới thì cần mạng, tắt bằng `OCR_TB_CHECK_UPDATE=0`.)
 
 **Mất bao lâu RAM?**
 Tiến trình chỉ dùng ddddocr: ~95 MB sau khi nạp model (~66 MB tính từ lúc import).
 Dùng thêm PP-OCR: ~110 MB. Chạy `ocr-tb memory` để đo trên máy của bạn.
+
+**Cổng HTTP mặc định là gì?**
+`2424`, đổi bằng `--port` hoặc `OCR_TB_PORT`.
 
 **Có cần cài Tesseract không?**
 Không bắt buộc — Tesseract chỉ để so sánh trong benchmark. Cài khi cần:
@@ -367,7 +441,7 @@ Lowercase và chỉ giữ ký tự `[0-9a-z]`, đúng charset captcha. Dùng `PO
 
 **Chạy nhiều request song song?**
 Server dùng thread pool (`--threads`, mặc định 4). Nhiều worker hơn thì tăng `--threads`
-và `--workers` của uvicorn nếu triển khai nhiều tiến trình.
+và chạy nhiều tiến trình uvicorn.
 
 ---
 

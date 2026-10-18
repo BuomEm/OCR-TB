@@ -25,7 +25,7 @@ DEFAULT_VARIANT = os.environ.get("OCR_TB_VARIANT", "raw")
 SOLVE_TIMEOUT_S = float(os.environ.get("OCR_TB_TIMEOUT", "15"))
 
 SERVER_HOST = os.environ.get("OCR_TB_HOST", "0.0.0.0")
-SERVER_PORT = int(os.environ.get("OCR_TB_PORT", "8080"))
+SERVER_PORT = int(os.environ.get("OCR_TB_PORT", "2424"))
 
 ALLOWED_LABEL_CHARS = set("0123456789abcdefghijklmnopqrstuvwxyz")
 

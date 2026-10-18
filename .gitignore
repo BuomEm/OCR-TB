@@ -1,20 +1,9 @@
-# .venv cục bộ
+__pycache__/
+*.pyc
 .venv/
 venv/
-
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
 build/
 dist/
-.pytest_cache/
+*.egg-info/
 .ruff_cache/
-
-# Kết quả benchmark / dữ liệu sinh ra khi chạy
-data/
-runs/
-report/
-debug/
-captcha/
-*.log
+.pytest_cache/

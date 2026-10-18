@@ -1,6 +1,6 @@
 """HTTP server cho OCR-TB (FastAPI + uvicorn).
 
-    ocr-tb serve --host 0.0.0.0 --port 8080
+    ocr-tb serve --host 0.0.0.0 --port 2424
 
 Endpoint
     GET  /health              trạng thái, phiên bản, model đã nạp

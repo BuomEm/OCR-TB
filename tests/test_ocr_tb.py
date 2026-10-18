@@ -229,6 +229,77 @@ def test_normalize_endpoint(client):
     assert client.post("/normalize", json={"text": "A7-b"}).json()["normalized"] == "a7b"
 
 
+# --------------------------------------------------------------------- version / update
+def test_current_version_matches_package_metadata():
+    """version trong pyproject.toml và code phải khớp (workflow release kiểm tra việc này)."""
+    from importlib.metadata import PackageNotFoundError
+    from importlib.metadata import version as dist_version
+
+    from ocr_tb.config import VERSION
+    from ocr_tb.update import current_version
+
+    try:
+        installed = dist_version("ocr-tb")
+    except PackageNotFoundError:
+        pytest.skip("ocr-tb chưa được cài dưới dạng package")
+
+    assert current_version() == installed
+    assert VERSION == installed, "pyproject.toml và ocr_tb.config.VERSION đang lệch nhau"
+
+
+@pytest.mark.parametrize(
+    ("candidate", "current", "expected"),
+    [
+        ("1.0.1", "1.0.0", True),
+        ("1.0.0", "1.0.0", False),
+        ("v2.0.0", "1.9.9", True),
+        ("0.9.9", "1.0.0", False),
+        ("1.10.0", "1.9.0", True),
+    ],
+)
+def test_is_newer(candidate, current, expected):
+    from ocr_tb.update import is_newer
+
+    assert is_newer(candidate, current) is expected
+
+
+def test_install_meta_roundtrip(tmp_path, monkeypatch):
+    from ocr_tb import update as update_module
+
+    (tmp_path / "data").mkdir(parents=True)
+    monkeypatch.setattr(update_module, "DATA_DIR", tmp_path / "data")
+
+    update_module.write_install_meta({"method": "script", "repo_dir": "/tmp/ocr-tb"})
+    meta = update_module.read_install_meta()
+    assert meta["method"] == "script"
+    assert meta["repo_dir"] == "/tmp/ocr-tb"
+
+
+def test_check_status_handles_offline(monkeypatch):
+    from ocr_tb import update as update_module
+
+    monkeypatch.setattr(update_module, "fetch_latest_release", lambda *a, **k: None)
+    status = update_module.check_status()
+    assert status["update_available"] is None
+    assert status["current"]
+
+
+def test_update_dry_run_does_not_touch_system(monkeypatch):
+    from ocr_tb import update as update_module
+
+    monkeypatch.setattr(update_module, "read_install_meta", lambda: {"method": "pypi"})
+    code, output = update_module._pip_upgrade(dry_run=True)
+    assert code == 0
+    assert "[dry-run]" in output
+
+
+def test_update_notice_disabled_by_env(monkeypatch):
+    from ocr_tb import update as update_module
+
+    monkeypatch.setenv("OCR_TB_CHECK_UPDATE", "0")
+    assert update_module.update_notice() is None
+
+
 # --------------------------------------------------------------------- samples
 def _sample_labels() -> list[dict]:
     if not (SAMPLES_DIR / "labels.json").exists():

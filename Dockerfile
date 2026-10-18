@@ -1,6 +1,6 @@
 # OCR-TB: ghi captcha OCR + HTTP server
 # Build:  docker build -t ocr-tb:1.0.0 tools/ocr-tb
-# Run:    docker run --rm -p 8080:8080 ocr-tb:1.0.0
+# Run:    docker run --rm -p 2424:2424 ocr-tb:1.0.0
 FROM python:3.12-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     OCR_TB_HOME=/opt/ocr-tb \
     OCR_TB_CACHE=/opt/ocr-tb/models \
     OCR_TB_HOST=0.0.0.0 \
-    OCR_TB_PORT=8080
+    OCR_TB_PORT=2424
 
 # libGL/libglib: opencv-python cần khi cài qua rapidocr; tesseract cho benchmark.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -32,7 +32,7 @@ RUN useradd --create-home --uid 10001 ocrtb \
     && chown -R ocrtb:ocrtb /opt/ocr-tb /app
 USER ocrtb
 
-EXPOSE 8080
+EXPOSE 2424
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
     CMD curl -fsS "http://127.0.0.1:${OCR_TB_PORT}/health" || exit 1

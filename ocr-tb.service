@@ -11,7 +11,7 @@ Group=ocr-tb
 Environment=OCR_TB_HOME=/opt/ocr-tb
 Environment=OCR_TB_CACHE=/opt/ocr-tb/models
 Environment=OCR_TB_HOST=0.0.0.0
-Environment=OCR_TB_PORT=8080
+Environment=OCR_TB_PORT=2424
 ExecStart=/opt/ocr-tb/venv/bin/ocr-tb serve
 Restart=on-failure
 RestartSec=5
