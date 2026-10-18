@@ -1,0 +1,31 @@
+﻿config,model_label,images,labeled,exact,exact_accuracy_pct,char_accuracy_pct,length_match_pct,avg_edit_distance,empty_outputs,errors,mean_ms,p50_ms,p95_ms,max_ms,total_s
+ddddocr/alnum/raw,"ddddocr (ONNX, không detection)",100,100,99,99.0,99.8,99.0,0.01,0,0,59.26,58.44,72.62,92.16,5.93
+ddddocr/default/raw,"ddddocr (ONNX, không detection)",100,100,98,98.0,99.6,98.0,0.02,0,0,21.73,21.61,27.63,30.73,2.17
+ddddocr/old/raw,"ddddocr (ONNX, không detection)",100,100,98,98.0,99.6,98.0,0.02,0,0,34.31,33.31,44.11,53.16,3.43
+ppocr_v6_small/rec_only/otsu,"PP-OCRv6 small (rec, ONNX)",100,100,93,93.0,98.4,97.0,0.07,0,0,25.22,24.0,35.93,63.31,2.52
+ppocr_v6_small/rec_only/upscale2x_otsu,"PP-OCRv6 small (rec, ONNX)",100,100,91,91.0,97.9,97.0,0.09,0,0,25.68,24.02,35.77,59.84,2.57
+ppocr_v6_small/rec_only/raw,"PP-OCRv6 small (rec, ONNX)",100,100,85,85.0,96.75,89.0,0.15,0,0,16.26,16.39,19.92,23.38,1.63
+ddddocr/default/otsu,"ddddocr (ONNX, không detection)",100,100,67,67.0,93.3,69.0,0.33,0,0,24.38,23.54,33.04,41.58,2.44
+ddddocr/old/otsu,"ddddocr (ONNX, không detection)",100,100,67,67.0,93.3,69.0,0.33,0,0,37.78,33.38,62.91,97.92,3.78
+ddddocr/alnum/otsu,"ddddocr (ONNX, không detection)",100,100,67,67.0,93.3,69.0,0.33,0,0,48.88,48.07,61.97,75.7,4.89
+ddddocr/old/upscale2x_otsu,"ddddocr (ONNX, không detection)",100,100,61,61.0,92.15,62.0,0.39,0,0,32.41,31.11,42.4,52.73,3.24
+ddddocr/default/upscale2x_otsu,"ddddocr (ONNX, không detection)",100,100,61,61.0,92.15,62.0,0.39,0,0,35.68,33.97,47.45,61.33,3.57
+ddddocr/alnum/upscale2x_otsu,"ddddocr (ONNX, không detection)",100,100,61,61.0,92.15,62.0,0.39,0,0,48.23,48.12,67.18,73.19,4.82
+ppocr_v5_en/rec_only/raw,"PP-OCRv5 English (mobile rec, ONNX)",100,100,58,58.0,88.85,74.0,0.51,0,0,20.72,19.67,29.5,37.69,2.07
+ppocr_v5_en/rec_only/upscale2x_otsu,"PP-OCRv5 English (mobile rec, ONNX)",100,100,51,51.0,87.85,73.0,0.55,0,0,20.27,18.19,29.09,32.63,2.03
+ppocr_v5_en/rec_only/otsu,"PP-OCRv5 English (mobile rec, ONNX)",100,100,49,49.0,86.9,76.0,0.58,0,0,23.08,23.3,32.35,45.02,2.31
+tesseract5/psm8_whitelist/upscale2x_otsu,"Tesseract 5 (CPU, psm)",100,100,18,18.0,59.45,54.0,1.76,0,0,203.1,187.76,273.47,381.08,20.31
+tesseract5/psm8_whitelist/raw,"Tesseract 5 (CPU, psm)",100,100,17,17.0,61.85,53.0,1.65,0,0,277.99,228.56,527.28,949.79,27.8
+tesseract5/psm13_raw/upscale2x_otsu,"Tesseract 5 (CPU, psm)",100,100,13,13.0,53.64,53.0,2.06,0,0,187.63,183.03,230.29,298.44,18.76
+tesseract5/psm13_raw/raw,"Tesseract 5 (CPU, psm)",100,100,9,9.0,54.71,50.0,2.04,0,0,203.74,186.12,268.47,353.11,20.37
+tesseract5/psm8_whitelist/otsu,"Tesseract 5 (CPU, psm)",100,100,8,8.0,49.92,46.0,2.12,0,0,266.08,237.07,413.61,430.65,26.61
+tesseract5/psm13_raw/otsu,"Tesseract 5 (CPU, psm)",100,100,7,7.0,44.97,49.0,2.39,0,0,221.86,227.04,279.98,323.04,22.19
+tesseract5/psm7_whitelist/raw,"Tesseract 5 (CPU, psm)",100,100,4,4.0,12.65,10.0,3.52,77,0,257.68,215.29,484.2,562.89,25.77
+tesseract5/psm6_whitelist/raw,"Tesseract 5 (CPU, psm)",100,100,4,4.0,12.4,10.0,3.56,73,0,217.65,214.61,298.32,370.71,21.77
+tesseract5/psm6_whitelist/upscale2x_otsu,"Tesseract 5 (CPU, psm)",100,100,3,3.0,8.16,9.0,3.72,74,0,209.91,184.2,302.94,473.52,20.99
+tesseract5/psm7_whitelist/upscale2x_otsu,"Tesseract 5 (CPU, psm)",100,100,3,3.0,6.8,8.0,3.74,87,0,178.31,174.61,209.86,246.69,17.83
+tesseract5/psm7_whitelist/otsu,"Tesseract 5 (CPU, psm)",100,100,1,1.0,9.95,7.0,3.63,77,0,218.04,216.32,298.63,368.47,21.8
+tesseract5/psm6_whitelist/otsu,"Tesseract 5 (CPU, psm)",100,100,1,1.0,9.17,8.0,3.72,73,0,184.32,176.21,248.25,283.84,18.43
+tesseract5/psm7_raw/otsu,"Tesseract 5 (CPU, psm)",100,100,1,1.0,8.36,13.0,3.72,77,0,193.95,175.32,287.08,365.63,19.4
+tesseract5/psm7_raw/upscale2x_otsu,"Tesseract 5 (CPU, psm)",100,100,1,1.0,5.77,9.0,3.79,87,0,209.31,197.81,277.67,322.07,20.93
+tesseract5/psm7_raw/raw,"Tesseract 5 (CPU, psm)",100,100,0,0.0,10.41,12.0,3.64,77,0,218.17,216.77,287.64,370.16,21.82

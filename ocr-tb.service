@@ -1,0 +1,28 @@
+[Unit]
+Description=OCR-TB HTTP API (giai captcha OCR)
+Documentation=https://github.com/your-org/trackingbot/tree/main/tools/ocr-tb
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=ocr-tb
+Group=ocr-tb
+Environment=OCR_TB_HOME=/opt/ocr-tb
+Environment=OCR_TB_CACHE=/opt/ocr-tb/models
+Environment=OCR_TB_HOST=0.0.0.0
+Environment=OCR_TB_PORT=8080
+ExecStart=/opt/ocr-tb/venv/bin/ocr-tb serve
+Restart=on-failure
+RestartSec=5
+# OCR chạy CPU, giới hạn tài nguyên cho host
+MemoryMax=1G
+CPUQuota=200%
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/ocr-tb
+
+[Install]
+WantedBy=multi-user.target
