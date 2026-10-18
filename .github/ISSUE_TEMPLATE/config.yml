@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Hỏi nhanh (thêm model, cách dùng)
+    url: https://github.com/BuomEm/OCR-TB/discussions
+    about: Câu hỏi về cách dùng, thêm model mới, hoặc tích hợp vào dự án của bạn.
+  - name: Lỗi bảo mật
+    url: https://github.com/BuomEm/OCR-TB/security/advisories/new
+    about: Báo lỗ hổng bảo mật riêng tư thay vì mở issue công khai.

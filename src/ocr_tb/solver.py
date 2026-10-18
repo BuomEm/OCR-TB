@@ -2,7 +2,7 @@
 
 Dùng chung cho CLI và HTTP server. Mặc định chain:
     ddddocr/default -> ppocr_v6_small/rec_only(otsu)
-Vì theo benchmark trên bộ 100 ảnh ViettelPost:
+Vì theo benchmark trên bộ 100 ảnh thự nghiệm:
     ddddocr/default  98% đúng, 22 ms/ảnh
     ppocr_v6_small   93% đúng (bắt buộc dùng biến thể otsu)
 """

@@ -1,4 +1,4 @@
-# Benchmark OCR captcha ViettelPost — run `full-100-raw-otsu`
+# Benchmark OCR — bộ 100 ảnh captcha thự nghiệm (4 ký tự a-z0-9)
 
 - Thời điểm chạy: 2026-10-18 07:26:38
 - Số ảnh: 100 | số ảnh đã có nhãn: 100

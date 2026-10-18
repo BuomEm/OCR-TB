@@ -1,0 +1,46 @@
+# Cấu hình CodeRabbit — tự động review pull request.
+# Bật bằng cách cài app CodeRabbit cho repo: https://www.coderabbit.ai/
+language: "vi-VN"
+
+reviews:
+  # Chỉ review PR, không tự tạo issue
+  profile: "chess"        # dùng "assertive" nếu muốn nhiều góp ý hơn
+  request_changes_workflow: true
+  high_level_summary: true
+  review_title: "CR: $PR_TITLE"
+  auto_review: true
+  # Bỏ qua file sinh tự động / không liên quan
+  path_filters:
+    - "docs/benchmark/**"
+    - "**/*.md"
+  instructions: |
+    - Chỉ ra lỗi logic, lỗi xử lý lỗi và thiếu kiểm thử.
+    - Nhấn mạnh phần tương thích Windows/Linux/macOS.
+    - Bỏ qua vấn đề phong cách/format nhỏ.
+
+# Chỉ review thay đổi trong các thư mục này
+path_filters:
+  - "src/**"
+  - "tests/**"
+  - "install.sh"
+  - "install.ps1"
+  - "Dockerfile"
+  - ".github/workflows/**"
+
+# Bỏ qua bản dịch / file sinh tự động
+auto_increment: true
+
+# Cho phép bot góp ý về commit message
+commit_message_instructions:
+  enabled: true
+
+# Chỉ góp ý inline khi có ghi chú cụ thể
+pre_merge_checks:
+  enabled: true
+  checks:
+    - title: "Không có lỗi cú pháp Python"
+      description: "Chạy `python -m compileall -q src`"
+    - title: "Test đã được thêm hoặc cập nhật"
+      description: "PR thay đổi hành vi thì phải có test tương ứng"
+    - title: "CHANGELOG đã được cập nhật"
+      description: "Bắt buộc khi thay đổi hành vi hoặc API"

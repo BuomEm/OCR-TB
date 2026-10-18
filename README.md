@@ -19,8 +19,8 @@ và chính xác nhất, có sẵn HTTP server để gọi từ ứng dụng khá
 
 ## 📊 Kết quả đo thật
 
-Bộ **100 ảnh captcha ViettelPost** (200×50, 4 ký tự `a-z0-9`, nhiễu nét cong),
-được gán nhãn tay và chạy trên CPU thông thường:
+Bộ **100 ảnh captcha thự nghiệm** (200×50 px, 4 ký tự `a-z0-9`, có nhiễu nét cong),
+được gán nhãn tay bằng tay và đo trên CPU thông thường:
 
 | Hạng | Cấu hình | Chính xác tuyệt đối | Char acc | Tốc độ | RAM tiến trình |
 |---|---|---|---|---|---|
@@ -31,8 +31,8 @@ Bộ **100 ảnh captcha ViettelPost** (200×50, 4 ký tự `a-z0-9`, nhiễu n�
 | 5 | `ppocr_v5_en` | 58% | 88.9% | 21 ms/ảnh | ~110 MB |
 | 6 | `tesseract5 --psm 8` | 17% | 61.9% | 278 ms/ảnh | ~26 MB (process riêng) |
 
-> Báo cáo đầy đủ: [`docs/benchmark/report-vietelpost-100.md`](docs/benchmark/report-vietelpost-100.md) ·
-> [dữ liệu thô CSV](docs/benchmark/score-vietelpost-100.csv)
+> Báo cáo đầy đủ: [`docs/benchmark/report-100-captcha.md`](docs/benchmark/report-100-captcha.md) ·
+> [dữ liệu thô CSV](docs/benchmark/score-100-captcha.csv)
 
 ### Ảnh mẫu đi kèm repo
 
@@ -92,11 +92,12 @@ cd OCR-TB
 .\install.ps1
 ```
 
-Lệnh sẽ được tạo tại `%LOCALAPPDATA%\Programs\ocr-tb\bin\ocr-tb.cmd`.
-Thêm vào PATH:
+Lệnh được tạo tại `%LOCALAPPDATA%\Programs\ocr-tb\bin\ocr-tb.cmd` và **script tự thêm
+thư mục này vào PATH của tài khoản** — không cần cấu hình thêm, không cần quyền admin.
+Terminal đang mở dùng được ngay, terminal mới dùng vĩnh viễn.
 
 ```powershell
-[Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path','User') + ';$env:LOCALAPPDATA\Programs\ocr-tb\bin', 'User')
+ocr-tb --version
 ```
 
 ### 🐧 Linux / 🍎 macOS

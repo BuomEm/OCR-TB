@@ -74,15 +74,30 @@ $shim = Join-Path $binDir "ocr-tb.cmd"
 "@ | Set-Content -Path $shim -Encoding ASCII
 Write-Step "Đã tạo lệnh: $shim"
 
+# Tự thêm vào PATH của user (không cần mở terminal mới, không cần quyền admin)
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($userPath -notlike "*$binDir*") {
+  $newPath = if ([string]::IsNullOrWhiteSpace($userPath)) { $binDir } else { "$userPath;$binDir" }
+  [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+  Write-Step "Đã thêm vào PATH của user: $binDir"
+  $env:Path = "$env:Path;$binDir"
+  $added = $true
+} else {
+  Write-Step "PATH đã có sẵn: $binDir"
+  $added = $false
+}
+
 Write-Host ""
 Write-Host "Cài xong." -ForegroundColor Green
-Write-Host "  Thêm vào PATH (cho phiên hiện tại):"
-Write-Host "    `$env:Path += ';$binDir'"
-Write-Host "  Thêm vĩnh viễn cho user:"
-Write-Host "    [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path','User') + ';$binDir', 'User')"
+if ($added) {
+  Write-Host "  PATH đã được cập nhật tự động cho tài khoản này."
+  Write-Host "  Terminal đang mở dùng được ngay; terminal mới dùng vĩnh viễn."
+} else {
+  Write-Host "  PATH đã có sẵn $binDir"
+}
 Write-Host ""
 Write-Host "Kiểm tra nhanh:"
-Write-Host "  & `"$shim`" info"
-Write-Host "  & `"$shim`" solve .\samples"
+& ocr-tb --version
+& $shim solve (Join-Path $scriptDir "samples")
 Write-Host ""
 Write-Host "Tesseract (tuỳ chọn, chỉ cho benchmark): winget install --id UB-Mannheim.TesseractOCR"

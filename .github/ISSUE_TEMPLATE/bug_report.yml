@@ -1,0 +1,69 @@
+name: Bug report
+description: Báo lỗi OCR-TB (sai kết quả, không chạy được, lỗi cài đặt)
+title: "[Bug] "
+labels: ["bug", "cần phản hồi"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cảm ơn bạn đã báo lỗi. Mô tả càng cụ thể càng dễ được sửa nhanh.
+        Nếu là lỗi OCR (đọc sai ký tự) vui lòng kèm ảnh captcha và đáp án đúng.
+
+  - type: textarea
+    id: mo-ta
+    attributes:
+      label: Mô tả lỗi
+      description: Chuyện gì xảy ra? Bạn mong đợi điều gì?
+      placeholder: Khi chạy `ocr-tb solve cap.png`, kết quả là "xk2" nhưng đáp án đúng là "xk9".
+    validations:
+      required: true
+
+  - type: textarea
+    id: tai-lap
+    attributes:
+      label: Cách tái hiện
+      description: Các bước tối thiểu để tái hiện lỗi.
+      render: shell
+      placeholder: |
+        1. Cài: bash install.sh
+        2. Chạy: ocr-tb solve cap.png --fallback
+        3. Lỗi xuất hiện: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: anh
+    attributes:
+      label: Ảnh mẫu (nếu là lỗi OCR)
+      description: Kéo thả ảnh captcha vào đây, hoặc dán link. Ghi rõ đáp án đúng.
+      value: |
+        (bỏ trống nếu không phải lỗi đọc chữ)
+
+  - type: input
+    id: muc-do
+    attributes:
+      label: Mức độ ảnh hưởng
+      value: "Chọn một"
+    validations:
+      required: true
+    options:
+      - "Chặn - không dùng được"
+      - "Nghiêm trọng - có workaround tạm"
+      - "Nhẹ - vẫn dùng được"
+
+  - type: textarea
+    id: moi-truong
+    attributes:
+      label: Thông tin môi trường
+      description: Dán kết quả của lệnh `ocr-tb info`.
+      render: shell
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: da-thu
+    attributes:
+      label: Trước khi gửi
+      options:
+        - label: Tôi đã chạy `ocr-tb update --check`
+        - label: Tôi đã thử `pytest tests -q` trong repo (nếu lỗi xảy ra khi phát triển)

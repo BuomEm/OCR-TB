@@ -1,0 +1,81 @@
+# Tự động gắn nhãn và phản hồi trên issue/PR.
+# Không cần cấu hình token, dùng GITHUB_TOKEN mặc định.
+
+name: Issue và PR automation
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request_target:
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  labeler:
+    name: Gắn nhãn tự động
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const body = (context.payload.issue?.body || context.payload.pull_request?.body || '').toLowerCase();
+            const title = (context.payload.issue?.title || context.payload.pull_request?.title || '').toLowerCase();
+            const text = `${title}\n${body}`;
+            const labels = [];
+
+            // Theo loại đầu vào
+            if (context.payload.issue && !context.payload.pull_request) {
+              const t = context.payload.issue.title.toLowerCase();
+              if (t.startsWith('[bug]')) labels.push('bug');
+              if (t.startsWith('[feature]')) labels.push('enhancement');
+            }
+
+            // Theo nội dung
+            if (/linux|ubuntu|systemd|docker/.test(text)) labels.push('linux');
+            if (/windows|powershell|winget|install\.ps1/.test(text)) labels.push('windows');
+            if (/macos|mac os|brew/.test(text)) labels.push('macos');
+            if (/tesseract/.test(text)) labels.push('tesseract');
+            if (/pp-ocr|ppocr|onnx/.test(text)) labels.push('ppocr');
+            if (/ddddocr/.test(text)) labels.push('ddddocr');
+            if (/docker/.test(text)) labels.push('docker');
+            if (/bench|benchmark|b\u1ea3o c\u1ea3p|s\u1ed1 li\u1ec7u/.test(text)) labels.push('benchmark');
+            if (/captcha|ocr|server|api|\/solve/.test(text)) labels.push('ocr');
+            if (/doc|readme|h\u01b0\u1edbng d\u1eabn|t\u00e0i li\u1ec7u/.test(text)) labels.push('documentation');
+            if (/question|h\u1ecfi|c\u00e1ch d\u00f9ng|l\u00e0m sao/.test(text)) labels.push('question');
+
+            const unique = [...new Set(labels)].filter(Boolean);
+            if (unique.length === 0) unique.push('cần phản hồi');
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue?.number || context.payload.pull_request?.number,
+              labels: unique,
+            });
+
+  welcome:
+    name: Chào mừng
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const n = context.payload.issue.number;
+            const body = [
+              'Cảm ơn bạn đã mở issue!',
+              '',
+              'Một vài gợi ý giúp lỗi được xử lý nhanh hơn:',
+              '',
+              '- Chạy `ocr-tb update --check` xem đã có bản mới chưa',
+              '- Dán kết quả `ocr-tb info` (che thông tin nhạy cảm nếu cần)',
+              '- Nếu là lỗi đọc chữ, kèm ảnh captcha và đáp án đúng',
+              '- Nếu lỗi cài đặt, nói rõ Windows hay Linux/macOS và lệnh đã chạy',
+              '',
+              `Bạn có thể xem README tại https://github.com/BuomEm/OCR-TB#readme`,
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: n, body });

@@ -4,12 +4,12 @@ Thư mục này lưu kết quả đo thật để người dùng tham khảo tr�
 
 | File | Nội dung |
 |---|---|
-| [`report-vietelpost-100.md`](report-vietelpost-100.md) | Báo cáo đầy đủ: xếp hạng, thời gian, nhầm ký tự, mức độ giống nhau giữa các model |
-| [`score-vietelpost-100.csv`](score-vietelpost-100.csv) | Bảng điểm dạng CSV để vẽ biểu đồ |
+| [`report-100-captcha.md`](report-100-captcha.md) | Báo cáo đầy đủ: xếp hạng, thời gian, nhầm ký tự, mức độ giống nhau giữa các model |
+| [`score-100-captcha.csv`](score-100-captcha.csv) | Bảng điểm dạng CSV để vẽ biểu đồ |
 
 ## Điều kiện đo
 
-- **Bộ ảnh:** 100 captcha ViettelPost, 200×50 px, 4 ký tự `a-z0-9`, nhiễu đường cong.
+- **Bộ ảnh:** 100 captcha thự nghiệm, 200×50 px, 4 ký tự `a-z0-9`, nhiễu đường cong.
 - **Nhãn:** gán tay bởi con người, đối chiếu lại bằng mắt cho các ca bất đồng giữa model.
 - **Máy:** Windows 11, CPU Intel Core thế hệ Core Ultra (8 luồng), không GPU.
 - **Thư viện:** ddddocr 1.6.1, onnxruntime 1.31.0, rapidocr-onnxruntime 1.2.3, tesseract 5.4.0.

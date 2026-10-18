@@ -1,0 +1,38 @@
+name: Yêu cầu tính năng
+description: Đề xuất model mới, kiểu tiền xử lý mới, hoặc cải thiện
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: van-de
+    attributes:
+      label: Vấn đề cần giải quyết
+      description: Bạn đang gặp khó khăn gì khi dùng OCR-TB?
+    validations:
+      required: true
+
+  - type: textarea
+    id: de-xuat
+    attributes:
+      label: Đề xuất
+      description: Bạn muốn OCR-TB làm gì thêm? Nêu rõ API/CLI mong muốn.
+    validations:
+      required: true
+
+  - type: textarea
+    id: thay-the
+    attributes:
+      label: Giải pháp thay thế đã thử
+
+  - type: dropdown
+    id: muc-do
+    attributes:
+      label: Mức độ quan trọng
+      value: "Chọn một"
+    validations:
+      required: true
+    options:
+      - "Rất cao - chặn dự án của tôi"
+      - "Cao - sẽ dùng thường xuyên"
+      - "Trung bình - thỉnh thoảng dùng"
+      - "Thấp - cho vui"

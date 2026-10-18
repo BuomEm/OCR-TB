@@ -29,7 +29,7 @@ SERVER_PORT = int(os.environ.get("OCR_TB_PORT", "2424"))
 
 ALLOWED_LABEL_CHARS = set("0123456789abcdefghijklmnopqrstuvwxyz")
 
-#: Bộ captcha ViettelPost dùng 4 ký tự; chỉ dùng để gợi ý khi gán nhãn tay.
+#: Bộ captcha 4 ký tự dùng 4 ký tự; chỉ dùng để gợi ý khi gán nhãn tay.
 DEFAULT_CAPTCHA_LENGTH = 4
 
 #: Model tải về lần đầu, dung lượng ~37 MB (ddddocr đã nằm trong package pip).
