@@ -27,11 +27,17 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: pip
 
-      - name: Cài thư viện hệ thống (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Cài thư viện hệ thống (Linux)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr libgl1 libglib2.0-0
+
+      - name: Cài Tesseract (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install tesseract
+          echo "TESSDATA_PREFIX=$(brew --prefix)/share/tessdata" >> "$GITHUB_ENV"
 
       - name: Cài Tesseract (Windows)
         if: runner.os == 'Windows'
